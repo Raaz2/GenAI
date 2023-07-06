@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Zesty Zomato - Menu Management</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='menu.css') }}">
+</head>
+<body>
+    <h1>Menu Management</h1>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    <h2>Add New Dish</h2>
+    <form method="POST" action="{{ url_for('menu_management') }}">
+        <label for="dish_id">Dish ID:</label>
+        <input type="text" name="dish_id" required><br>
+        <label for="dish_name">Dish Name:</label>
+        <input type="text" name="dish_name" required><br>
+        <label for="price">Price:</label>
+        <input type="number" name="price" min="0" step="0.01" required><br>
+        <label for="availability">Availability:</label>
+        <input type="checkbox" name="availability"><br>
+        <input type="submit" value="Add Dish">
+    </form>
+    <h2>Menu</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Dish ID</th>
+                <th>Dish Name</th>
+                <th>Price</th>
+                <th>Availability</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dish in menu.values() %}
+                <tr>
+                    <td>{{ dish.dish_id }}</td>
+                    <td>{{ dish.dish_name }}</td>
+                    <td>{{ dish.price }}</td>
+                    <td>{{ 'Available' if dish.availability else 'Not Available' }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

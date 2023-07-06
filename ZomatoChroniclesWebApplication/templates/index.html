@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Zesty Zomato - Homepage</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index.css') }}">
+</head>
+<body>
+    <h1>Welcome to Zesty Zomato!</h1>
+    <p>Please select an option:</p>
+    <ul>
+        <li><a href="{{ url_for('menu_management') }}">Menu Management</a></li>
+        <li><a href="{{ url_for('take_order') }}">Take Order</a></li>
+        <li><a href="{{ url_for('update_status') }}">Update Order Status</a></li>
+        <li><a href="{{ url_for('review_orders') }}">Review Orders</a></li>
+    </ul>
+</body>
+</html>
