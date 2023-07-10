@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Zesty Zomato - Create Order</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+
+<body>
+    <header>
+        <h1>Zesty Zomato</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('hello_world') }}">Home</a></li>
+            <li><a href="{{ url_for('view_all') }}">Menu</a></li>
+            <li><a href="{{ url_for('create_order') }}">Create Order</a></li>
+            <li><a href="{{ url_for('get_all_orders') }}">Review Orders</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h2>Create Order</h2>
+        <!-- Content of the create order page -->
+        <form id="order-form">
+            <label for="customer-name">Customer Name:</label>
+            <input type="text" id="customer-name" required><br><br>
+
+            <fieldset>
+                <legend>Menu</legend>
+                <div id="menu-items"></div>
+            </fieldset>
+
+            <input type="submit" value="Create Order">
+        </form>
+    </main>
+
+    <footer>
+        &copy; 2023 Zesty Zomato. All rights reserved.
+    </footer>
+</body>
+
+</html>
+<script>
+    const orderForm = document.getElementById('order-form');
+    orderForm.addEventListener('submit', createOrder);
+
+    // Fetch the menu data from the backend
+    fetch('/dish_data')
+        .then(response => response.json())
+        .then(data => {
+            const menuItems = document.getElementById('menu-items');
+            console.log(data);
+            // Iterate over each dish and create an input field for quantity selection
+            data.forEach(dish => {
+                const quantityLabel = document.createElement('label');
+                quantityLabel.htmlFor = `quantity-${dish.id}`;
+                quantityLabel.textContent = 'Quantity:';
+
+                const quantityInput = document.createElement('input');
+                quantityInput.type = 'number';
+                quantityInput.name = `dish-quantities[${dish.id}]`;
+                quantityInput.id = `quantity-${dish.id}`;
+                quantityInput.min = '1';
+                quantityInput.max = dish.stock;
+                quantityInput.value = '1';
+
+                const div = document.createElement('div');
+                div.appendChild(quantityLabel);
+                div.appendChild(quantityInput);
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.name = 'dish-ids';
+                checkbox.value = dish.id;
+                checkbox.id = `dish-${dish.id}`;
+
+                const label = document.createElement('label');
+                label.htmlFor = `dish-${dish.id}`;
+                label.textContent = `${dish.name} - $${dish.price}`;
+
+                div.appendChild(checkbox);
+                div.appendChild(label);
+
+                menuItems.appendChild(div);
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to retrieve menu');
+        });
+
+    function createOrder(event) {
+        event.preventDefault();
+
+        const customerName = document.getElementById('customer-name').value;
+        const selectedDishes = Array.from(document.querySelectorAll('input[name="dish-ids"]:checked')).map(input => input.value);
+
+        const dishQuantities = {};
+        selectedDishes.forEach(dishId => {
+            const quantityInput = document.querySelector(`input[name="dish-quantities[${dishId}]"]`);
+            const quantity = quantityInput ? parseInt(quantityInput.value) : 0;
+            dishQuantities[dishId] = quantity;
+        });
+
+        const data = {
+            customer_name: customerName,
+            dish_quantities: dishQuantities
+        };
+
+        fetch('/order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(result => {
+                alert(result.message);
+                // Redirect to the orders page or perform any other necessary action
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to create order');
+            });
+    }
+
+</script>

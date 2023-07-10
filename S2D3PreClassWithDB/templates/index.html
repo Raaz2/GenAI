@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Zesty Zomato</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Zesty Zomato</h1>
+    </header>
+    
+    <nav>
+      <ul>
+          <li><a href="{{ url_for('hello_world') }}">Home</a></li>
+          <li><a href="{{ url_for('view_all') }}">Menu</a></li>
+          <li><a href="{{ url_for('create_order') }}">Create Order</a></li>
+          <li><a href="{{ url_for('get_all_orders') }}">Review Orders</a></li>
+      </ul>
+    </nav>
+  
+    <main>
+        <h2>Welcome to Zesty Zomato!</h2>
+        <!-- Content of the home page -->
+    </main>
+    
+    <footer>
+        &copy; 2023 Zesty Zomato. All rights reserved.
+    </footer>
+</body>
+</html>

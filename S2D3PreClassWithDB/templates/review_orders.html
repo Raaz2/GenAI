@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Zesty Zomato - Review Orders</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <!-- <script src="{{ url_for('static', filename='socketio.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
+    <script>
+        var socket = io();
+        socket.on('order_status_update', function (msg) {
+            // Update the order status on the page using msg.order_id and msg.status
+            console.log("socket connected");
+        });
+    </script> -->
+
+</head>
+
+
+<body>
+    <header>
+        <h1>Zesty Zomato</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('hello_world') }}">Home</a></li>
+            <li><a href="{{ url_for('view_all') }}">Menu</a></li>
+            <li><a href="{{ url_for('create_order') }}">Create Order</a></li>
+            <li><a href="{{ url_for('get_all_orders') }}">Review Orders</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h1>Review Orders</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer Name</th>
+                    <th>Status</th>
+                    <th>Dishes</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.order_id }}</td>
+                    <td>{{ order.customer_name }}</td>
+                    <td>
+                        <ul>
+                            {% for dish in order.dishes %}
+                            <li>{{ dish }}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td>
+                        <select id="status-{{ order.order_id }}" data-order-id="{{ order.order_id }}">
+                            <option value="received" {% if order.status=='received' %}selected{% endif %}>Received
+                            </option>
+                            <option value="processing" {% if order.status=='processing' %}selected{% endif %}>Processing
+                            </option>
+                            <option value="ready_for_pickup" {% if order.status=='ready_for_pickup' %}selected{% endif
+                                %}>Ready for Pickup</option>
+                            <option value="out_for_delivery" {% if order.status=='out_for_delivery' %}selected{% endif
+                                %}>Out for Delivery</option>
+                            <option value="en_route" {% if order.status=='en_route' %}selected{% endif %}>En Route
+                            </option>
+                            <option value="delivered" {% if order.status=='delivered' %}selected{% endif %}>Delivered
+                            </option>
+                            <option value="cancelled" {% if order.status=='cancelled' %}selected{% endif %}>Cancelled
+                            </option>
+                            <option value="refunded" {% if order.status=='refunded' %}selected{% endif %}>Refunded
+                            </option>
+                        </select>
+                    </td>
+                    <td>
+                        <a href="#" onclick="updateOrderStatus('{{ order.order_id }}')">Update</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+
+
+    <footer>
+        &copy; 2023 Zesty Zomato. All rights reserved.
+    </footer>
+</body>
+
+</html>
